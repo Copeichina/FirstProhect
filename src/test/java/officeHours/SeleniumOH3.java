@@ -5,12 +5,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.Assert;
 
 import java.util.HashMap;
 
 public class SeleniumOH3 {
     public static void main(String[] args) throws InterruptedException {
         WebDriver driver = WebDriverFactory.getDriver("chrome");
+        driver.manage().window().maximize();
         driver.get("http://qa3.vytrack.com");
         WebElement username = driver.findElement(By.id("prependedInput"));
         username.sendKeys("salesmanager110");
@@ -36,9 +38,9 @@ public class SeleniumOH3 {
         Thread.sleep(3000);
 
         String currentTitle = driver.getTitle();
-        if (currentTitle.equalsIgnoreCase("Create Contact - Contacts - Customers")){
+        if (currentTitle.equalsIgnoreCase("Create Contact - Contacts - Customers")) {
             System.out.println("Title is expected");
-        }else {
+        } else {
             System.out.println("Title is NOT expected");
         }
         //MEETING ID FOR TODAY CLASS: 949992072
@@ -54,7 +56,7 @@ public class SeleniumOH3 {
         contact1.put("Country", "United States");
 
         System.out.println("Contact 1: " + contact1);
-
+Thread.sleep(1000);
         WebElement first_name = driver.findElement(By.xpath("(//input[@data-name = 'field__first-name'])[1]"));
         WebElement last_name = driver.findElement(By.xpath("(//input[@data-name = 'field__last-name'])[1]"));
         WebElement phone = driver.findElement(By.name("oro_contact_form[phones][0][phone]"));
@@ -86,13 +88,20 @@ public class SeleniumOH3 {
          */
         country_dropdwn.selectByVisibleText(contact1.get("Country"));
 
-        if (contact1.get("Sales Group").equalsIgnoreCase("true")){
+        Select state_list = new Select(state);
+        state_list.selectByVisibleText(contact1.get("State"));
+
+        if (contact1.get("Sales Group").equalsIgnoreCase("true")) {
             salesGroup.click();
         }
+        driver.findElement(By.xpath("//button[@class='btn btn-success action-button']")).click();
 
+        Thread.sleep(3000);
+
+        String fullName = contact1.get("First Name") + " " + contact1.get("Last Name");
+        String uiFullName = driver.findElement(By.xpath("//h1[@class='user-name']")).getText();
+        Assert.assertEquals(uiFullName, fullName);
     }
-
 }
-
 
 
